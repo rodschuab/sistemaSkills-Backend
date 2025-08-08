@@ -1,8 +1,10 @@
 package com.sistemaSkills.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import java.util.List;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sistemaSkills.dto.SkillRequest;
+import com.sistemaSkills.dto.SkillResponse;
 import com.sistemaSkills.entity.Skill;
 import com.sistemaSkills.service.SkillService;
 
@@ -40,10 +43,14 @@ public class SkillController {
 	}
 	
 	@GetMapping("/listar")
-	public ResponseEntity<List<Skill>> listarSkills(){
-		List<Skill> skills = skillService.listarTodasSkills();
-		return ResponseEntity.ok(skills);
+	public ResponseEntity<List<SkillResponse>> listarSkills(){
+	    List<Skill> skills = skillService.listarTodasSkills();
+	    List<SkillResponse> skillsDTO = skills.stream()
+	        .map(s -> new SkillResponse(s.getId(), s.getNome(), s.getDescricao(), s.getDataCadastro()))
+	        .collect(Collectors.toList());
+	    return ResponseEntity.ok(skillsDTO);
 	}
+	
 	
 	@DeleteMapping("/excluir/{id}")
 	public ResponseEntity<?> excluirSkill(@PathVariable Long id){

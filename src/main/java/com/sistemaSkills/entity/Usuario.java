@@ -24,6 +24,7 @@ public class Usuario  {
 	private LocalDateTime dataCadastro;
 	
 	@OneToMany (mappedBy = "usuario", cascade = CascadeType.ALL)
+	@JsonIgnore
 	private Set<UsuarioSkill> skills = new HashSet<>();
 	
 	public Usuario() {

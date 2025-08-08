@@ -1,8 +1,12 @@
 package com.sistemaSkills.config;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -15,8 +19,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.sistemaSkills.security.JwtAuthenticationFilter;
-
-import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -45,10 +47,10 @@ public class SecutiryConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-            .authorizeHttpRequests(authz -> authz
+    	http.csrf(csrf -> csrf.disable())
+		.cors((cors) -> cors.configurationSource(corsConfigurationSource()))
+		.httpBasic(Customizer.withDefaults())
+            .authorizeHttpRequests(authz -> authz	
                 .requestMatchers(
                     "/auth/**",
                     "/swagger-ui/**",
@@ -57,6 +59,12 @@ public class SecutiryConfig {
                     "/v3/api-docs.yaml",
                     "/v3/api-docs/swagger-config"
                 ).permitAll()
+                .requestMatchers(HttpMethod.GET, "/skills/listar").permitAll()
+                .requestMatchers(HttpMethod.POST, "/skills/listar").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/skills/listar").permitAll()
+                .requestMatchers(HttpMethod.DELETE, "/skills/listar/{id}").permitAll()
+                .requestMatchers(HttpMethod.GET, "/usuario-skills/listar/{id}").permitAll()
+     
                 .anyRequest().authenticated()
             );
 
