@@ -36,12 +36,15 @@ public class UsuarioSkillController {
             System.out.println("Nivel: " + request.getNivel());
             
             UsuarioSkill usuarioSkill = usuarioSkillService.associarSkill(usuarioId, request.getSkillId(), request.getNivel());
+            
+            
             UsuarioSkillResponse response = new UsuarioSkillResponse(
                 usuarioSkill.getId(),
                 usuarioSkill.getUsuario().getId(),
                 usuarioSkill.getUsuario().getLogin(),
                 usuarioSkill.getSkill().getId(),
                 usuarioSkill.getSkill().getNome(),
+                usuarioSkill.getSkill().getDescricao(),
                 usuarioSkill.getNivel(),
                 usuarioSkill.getDataAssociacao()
             );
@@ -60,13 +63,14 @@ public class UsuarioSkillController {
         try {
             UsuarioSkill usuarioSkill = usuarioSkillService.atualizarNivelSkill(usuarioId, request.getSkillId(), request.getNivel());
             
-            // Converter para DTO para evitar referência circular
+           
             UsuarioSkillResponse response = new UsuarioSkillResponse(
                 usuarioSkill.getId(),
                 usuarioSkill.getUsuario().getId(),
                 usuarioSkill.getUsuario().getLogin(),
                 usuarioSkill.getSkill().getId(),
                 usuarioSkill.getSkill().getNome(),
+                usuarioSkill.getSkill().getDescricao(), 
                 usuarioSkill.getNivel(),
                 usuarioSkill.getDataAssociacao()
             );
@@ -89,7 +93,7 @@ public class UsuarioSkillController {
         }
     }
     
-    // ENDPOINT CORRIGIDO - Agora retorna DTO ao invés da entidade
+  
     @GetMapping("/listar/{usuarioId}")
     public ResponseEntity<List<UsuarioSkillResponse>> listarSkillsDoUsuario(@PathVariable Long usuarioId){
         try {
@@ -99,17 +103,23 @@ public class UsuarioSkillController {
             List<UsuarioSkill> skills = usuarioSkillService.listarSkillsDoUsuario(usuarioId);
             System.out.println("Número de skills encontradas: " + skills.size());
             
-            // Converter para DTO para evitar referência circular
+            // ✅ CONVERTER PARA DTO COM DESCRIÇÃO E VERSÃO
             List<UsuarioSkillResponse> skillsResponse = skills.stream()
-                .map(us -> new UsuarioSkillResponse(
-                    us.getId(),
-                    us.getUsuario().getId(),
-                    us.getUsuario().getLogin(),
-                    us.getSkill().getId(),
-                    us.getSkill().getNome(),
-                    us.getNivel(),
-                    us.getDataAssociacao()
-                ))
+                .map(us -> {
+                    System.out.println("Processando skill: " + us.getSkill().getNome() + 
+                                     " - Descrição: " + us.getSkill().getDescricao());
+                    
+                    return new UsuarioSkillResponse(
+                        us.getId(),
+                        us.getUsuario().getId(),
+                        us.getUsuario().getLogin(),
+                        us.getSkill().getId(),
+                        us.getSkill().getNome(),
+                        us.getSkill().getDescricao(),                  
+                        us.getNivel(),
+                        us.getDataAssociacao()
+                    );
+                })
                 .collect(Collectors.toList());
             
             System.out.println("Skills convertidas para DTO: " + skillsResponse.size());
