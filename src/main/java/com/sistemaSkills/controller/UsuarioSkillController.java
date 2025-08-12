@@ -103,7 +103,7 @@ public class UsuarioSkillController {
             List<UsuarioSkill> skills = usuarioSkillService.listarSkillsDoUsuario(usuarioId);
             System.out.println("Número de skills encontradas: " + skills.size());
             
-            // ✅ CONVERTER PARA DTO COM DESCRIÇÃO E VERSÃO
+          
             List<UsuarioSkillResponse> skillsResponse = skills.stream()
                 .map(us -> {
                     System.out.println("Processando skill: " + us.getSkill().getNome() + 

@@ -64,6 +64,7 @@ public class SecutiryConfig {
                 .requestMatchers(HttpMethod.PUT, "/skills/listar").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/skills/listar/{id}").permitAll()
                 .requestMatchers(HttpMethod.GET, "/usuario-skills/listar/{id}").permitAll()
+                .requestMatchers(HttpMethod.POST, "/auth/cadastro").permitAll()
      
                 .anyRequest().authenticated()
             );

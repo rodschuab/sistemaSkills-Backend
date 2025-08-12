@@ -27,7 +27,7 @@ public class AssociarSkillRequest {
 	public void setNivel(Integer nivel) {
 		this.nivel = nivel;
 	}
-	// No seu AssociarSkillRequest.java
+	
 	@Override
 	public String toString() {
 	    return "AssociarSkillRequest{" +
